@@ -12,6 +12,9 @@ media
 # Backup files # 
 *.bak 
 
+./static/*
+./GuitarPickUp_Project/*
+
 # If you are using PyCharm # 
 # User-specific stuff
 .idea/**/workspace.xml
@@ -139,3 +142,5 @@ GitHub.sublime-settings
 !.vscode/extensions.json 
 .history
 
+static
+GuitarPickUp_Project/

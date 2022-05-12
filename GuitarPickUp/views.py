@@ -6,9 +6,9 @@ from django.core.mail import EmailMessage
 from django.views.decorators import gzip
 from django.http import StreamingHttpResponse
 from django.http import HttpResponseRedirect
-import cv2
-import threading
-import mediapipe as mp
+#import cv2
+#import threading
+#import mediapipe as mp
 import time
 from django.db import models
 from django.shortcuts import redirect, render
@@ -23,6 +23,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login,authenticate
 from django.shortcuts import render, redirect
+from django.conf import settings 
+
 from .forms import LoginForm, RegisterSerializer, UserSerializer
 from .forms import CreateUserForm
 from rest_framework import generics, permissions
@@ -33,7 +35,7 @@ from knox.views import LoginView as KnoxLoginView
 #imports from adel
 import joblib
 import numpy as np
-import threading
+#import threading
 from django.http import JsonResponse
 
 def home(request):
@@ -117,8 +119,8 @@ def coursePage(request):
     #t1 = threading.Thread(target=sound)
     #t1.start()
     #print(request.user.id)
-    feedback = Feedback(feedback = "test" , report = "test",user_id = request.user)
-    feedback.save()
+    #feedback = Feedback(feedback = "test" , report = "test",user_id = request.user)
+    #feedback.save()
     return render(request, 'base/try_excercise.html')
 
 def feedbackpage(request):
@@ -138,15 +140,18 @@ def mediapipePage(request):
     return StreamingHttpResponse(gen(cam, request), content_type="multipart/x-mixed-replace;boundary=frame")
 
 
-index_model = joblib.load("GuitarPickUp/models/classifier_index.pkl")
-middle_model = joblib.load("GuitarPickUp/models/classifier_middle.pkl")
-ring_model = joblib.load("GuitarPickUp/models/classifier_ring.pkl")
-pinky_model = joblib.load("GuitarPickUp/models/classifier_pinky.pkl")
+
 
 def validate_hands(request):
+    index_model = settings.INDEX_MODEL
+    middle_model = settings.MIDDLE_MODEL
+    ring_model = settings.RING_MODEL
+    pinky_model = settings.PINKY_MODEL
+
+    data = {}
     left_hand = request.GET.get('left_hand', None)
     right_hand = request.GET.get('right_hand', None)
-    data = {}
+    
     if (right_hand):
         right_decoded = json.loads(right_hand)
         index_left_coor = np.array([right_decoded[5]['x'],right_decoded[5]['y'],right_decoded[5]['z'],
@@ -179,6 +184,7 @@ def validate_hands(request):
         ring_prediction = ring_model.predict(ring_left_coor)[0]
         pinky_prediction = pinky_model.predict(pinky_left_coor)[0]
         info = getInfo()
+    
         data = {
             'index': index_prediction,
             'middle': middle_prediction,
@@ -186,7 +192,10 @@ def validate_hands(request):
             'pinky': pinky_prediction,
             'note': info,
         }
+        
+    
     return JsonResponse(data)
+    
 
 
 def record_feedback(request):

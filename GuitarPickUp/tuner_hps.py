@@ -9,7 +9,7 @@ import copy
 import os
 import numpy as np
 import scipy.fftpack
-import sounddevice as sd
+
 import time
 
 # General settings that can be changed by the user
