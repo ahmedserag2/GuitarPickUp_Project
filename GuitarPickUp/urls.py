@@ -16,7 +16,7 @@ urlpatterns = [
     path('login/', views.loginPage, name="login"),  
     path('mediapipePage/', mediapipePage, name='mediapipePage'),
     path('exercise/', coursePage, name='exercise'),
-    path('feedback/', views.feedbackpage, name='feedback'),
+    path('feedback/<int:my_id>', views.feedbackpage, name='feedback'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path("validate_hands", views.validate_hands, name='validate_hands'),
     path("tuner",views.tuner,name = 'tuner'),

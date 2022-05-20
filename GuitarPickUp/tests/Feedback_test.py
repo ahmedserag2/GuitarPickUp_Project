@@ -22,12 +22,20 @@ class Feedback_test(TestCase):
     def test_feedback(self):
         self.assertEqual(self.user.username ,"testuser")
         feedback1 = Feedback.objects.get(pk = 1)
+        #print("feedback")
+        #print(feedback1.feedback)
         self.assertEqual(feedback1.feedback ,"feedbacks/1")
 
     def test_feedback_page(self):
         c = Client()
         response = c.get("/feedback/1")
+        #print(response.context['feedback'].id)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["feedback"].id, 1)
+
+        response = c.get("/feedback/")
+        self.assertEqual(response.status_code, 404)
+
 
 
 

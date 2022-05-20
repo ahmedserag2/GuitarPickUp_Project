@@ -135,8 +135,9 @@ def coursePage(request):
     
     return render(request, 'base/try_excercise.html')
 
-def feedbackpage(request):
-    return render(request, 'base/feedback.html')
+def feedbackpage(request,my_id):
+    feedback = Feedback.objects.get(pk = 1)
+    return render(request, 'base/feedback.html',{'feedback':feedback})
 
 def pyscripttest(request):
     return render(request, 'base/testpyscript.html')
