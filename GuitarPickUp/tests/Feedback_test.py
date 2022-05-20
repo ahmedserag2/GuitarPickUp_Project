@@ -1,5 +1,5 @@
 
-from django.test import TestCase
+from django.test import Client,TestCase
 from django.contrib.auth.models import User
 from ..models import *
 import json
@@ -23,5 +23,11 @@ class Feedback_test(TestCase):
         self.assertEqual(self.user.username ,"testuser")
         feedback1 = Feedback.objects.get(pk = 1)
         self.assertEqual(feedback1.feedback ,"feedbacks/1")
+
+    def test_feedback_page(self):
+        c = Client()
+        response = c.get("/feedback/1")
+        self.assertEqual(response.status_code, 200)
+
 
 
