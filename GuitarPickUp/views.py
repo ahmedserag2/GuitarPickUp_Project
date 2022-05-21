@@ -136,8 +136,21 @@ def coursePage(request):
     return render(request, 'base/try_excercise.html')
 
 def feedbackpage(request,my_id):
-    feedback = Feedback.objects.get(pk = 1)
-    return render(request, 'base/feedback.html',{'feedback':feedback})
+    feedback = Feedback.objects.get(pk = my_id)
+    import pandas as pd
+    print('feedbacks/39')
+    with open('feedbacks/39') as json_file:
+        data = json.load(json_file)
+        df = pd.read_json(data)
+    #df_notes_records = df.groupby('note').sum()
+    table_dict = json.loads(df.to_json())
+    counts_dict = json.loads(df.loc[:,'index':'pinky'].sum().to_json())
+    #print(table_dict)
+    return render(request, 'base/feedback.html',{'feedback':feedback,
+    'table':table_dict,
+    'counts':counts_dict,
+    'n':len(table_dict['index'])
+    })
 
 def pyscripttest(request):
     return render(request, 'base/testpyscript.html')

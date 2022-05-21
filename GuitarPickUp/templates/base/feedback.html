@@ -162,6 +162,15 @@
     .color{
         background-color: #343a40;
     }
+
+    .my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+    }
+    .table-wrapper-scroll-y {
+    display: block;
+    }
 </style>
 {% endblock %}
 
@@ -234,7 +243,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="readonly-draft-view">
+                                <!--<div class="readonly-draft-view">
                                     <div class="caption-group-preview">
                                         <div class="text">Feedback 1.</div>
                                         <span class="timestamp">00:00:00</span>
@@ -279,8 +288,77 @@
                                         <div class="text">Feedback 11.</div>
                                         <span class="timestamp">00:00:15</span>
                                     </div>
+                                </div>-->
+                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">index</th>
+                                            <th scope="col">middle</th>
+                                            <th scope="col">ring</th>
+                                            <th scope="col">pinky</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% with ''|center:n as range %}
+                                    {% for _ in range %}
+                                    {{ forloop.counter }}
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>{{table.index}}</td>
+                                            <td>Otto</td>
+                                            <td>@mdo</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% endwith %}
+                                        
+                                    
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>Jacob</td>
+                                            <td>Thornton</td>
+                                            <td>@fat</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Larry</td>
+                                            <td>the Bird</td>
+                                            <td>@twitter</td>
+                                            <td>@mdo</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Larry</td>
+                                            <td>the Bird</td>
+                                            <td>@twitter</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Larry</td>
+                                            <td>the Bird</td>
+                                            <td>@twitter</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Larry</td>
+                                            <td>the Bird</td>
+                                            <td>@twitter</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
                                 </div>
                             </div>
+
+                            
                         </div>
                         <div class="col-xs-8 col-sm-10 col-md-8 col-lg-6" id="captions-scorecard-column">
                             <div class="section" style="height: auto !important;" id="captions-scorecard-container">
@@ -312,11 +390,11 @@
                                 <a id="finish-review"
                                     href="/Workspace/CompleteGradeReview/CP0157511228P-1?projectFlags=None"
                                     class="btn btn-tiny windows">Play again</a>
-    
+                                
                                 <button
                                     style="background-color: red;color: white;border-color: white;margin-left: 216px;">Download
                                     feedback</button>
-    
+                                
                                 <script>
                                     $(function () {
                                         $('.glyphicon-info-sign').tooltip({ content: 'body' });
