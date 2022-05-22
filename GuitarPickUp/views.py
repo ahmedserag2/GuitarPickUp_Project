@@ -143,13 +143,20 @@ def feedbackpage(request,my_id):
         data = json.load(json_file)
         df = pd.read_json(data)
     #df_notes_records = df.groupby('note').sum()
-    table_dict = json.loads(df.to_json())
-    counts_dict = json.loads(df.loc[:,'index':'pinky'].sum().to_json())
+    df_meaningful = df.copy()
+    df_meaningful['index'] = df['index'].replace(True,'correct').replace(False,'incorrect')
+    df_meaningful['middle'] = df['middle'].replace(True,'correct').replace(False,'incorrect')
+    df_meaningful['ring'] = df['ring'].replace(True,'correct').replace(False,'incorrect')
+    df_meaningful['pinky'] = df['pinky'].replace(True,'correct').replace(False,'incorrect')
+    table_dict = list(json.loads(df_meaningful.to_json(orient = 'index')).values())
+    counts_dict = df.loc[:,'index':'pinky'].sum().to_json()
+    note_counts = df['note'].value_counts().to_json()
     #print(table_dict)
     return render(request, 'base/feedback.html',{'feedback':feedback,
     'table':table_dict,
     'counts':counts_dict,
-    'n':len(table_dict['index'])
+    'n':df.shape[0],
+    'note_counts':note_counts
     })
 
 def pyscripttest(request):

@@ -176,6 +176,7 @@
 
 {% block body %}
 <!--------------------------Header section ----------------------------------->
+
     <div class="site-mobile-menu site-navbar-target">
         <div class="site-mobile-menu-header">
             <div class="site-mobile-menu-close mt-3">
@@ -294,7 +295,7 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col">#</th>
+                                            <th scope="col">note</th>
                                             <th scope="col">index</th>
                                             <th scope="col">middle</th>
                                             <th scope="col">ring</th>
@@ -302,56 +303,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {% with ''|center:n as range %}
-                                    {% for _ in range %}
-                                    {{ forloop.counter }}
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>{{table.index}}</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                            <td>@mdo</td>
-                                        </tr>
-                                    {% endfor %}
-                                    {% endwith %}
+                                    {% for row in table%}
                                         
                                     
                                         <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                            <td>@mdo</td>
+                                            <th scope="row">{{row.note}}</th>
+                                            <td>{{row.index}}</td>
+                                            <td>{{row.middle}}</td>
+                                            <td>{{row.ring}}</td>
+                                            <td>{{row.pinky}}</td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
-                                            <td>@mdo</td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
-                                            <td>@mdo</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
-                                            <td>@mdo</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
-                                            <td>@mdo</td>
-                                        </tr>
+                                    {% endfor %}
+                                        
                                         
                                     </tbody>
                                 </table>
@@ -360,14 +323,30 @@
 
                             
                         </div>
+                        
                         <div class="col-xs-8 col-sm-10 col-md-8 col-lg-6" id="captions-scorecard-column">
-                            <div class="section" style="height: auto !important;" id="captions-scorecard-container">
+                            <div class="section" style="height: 740px !important;overflow-y:auto !important;" id="captions-scorecard-container">
                                 <h1 class="header">
                                     Caption Feedback
                                 </h1>
+                                
                                 <div class="clearfix">
-    
+                                    
                                     <h4>Feedback</h4>
+                                    <h5>Notes Played</h5>
+                                    <div id='notesplot'>
+                                        <!-- Plotly chart will be drawn inside this DIV -->
+                                    </div>
+                                    <h5>How in tune were you</h5>
+
+
+                                    <h5>correct and incorrect positions</h5>
+                                    <div id='fingerBarPlot'>
+                                        <!-- Plotly chart will be drawn inside this DIV -->
+                                    </div>
+                                    
+                                    
+                                    <!--
                                     <h5>What you did well:</h5>
                                     <p>
                                         Good job with accuracy and alignment.
@@ -379,11 +358,11 @@
                                     </p>
     
                                     <br>
-    
+                                    -->
                                 </div>
     
                                 <br>
-    
+                                <!--
                                 <a id="back-to-project" href="/workspace/project/CP0157511228P-1"
                                     class="btn btn-tiny windows">« Back to
                                     the my past projects</a>
@@ -393,7 +372,7 @@
                                 
                                 <button
                                     style="background-color: red;color: white;border-color: white;margin-left: 216px;">Download
-                                    feedback</button>
+                                    feedback</button>-->
                                 
                                 <script>
                                     $(function () {
@@ -407,6 +386,65 @@
             </div>
         </div>
     </div>
+    <script src='https://cdn.plot.ly/plotly-2.12.1.min.js'></script>
+    <script>
+        var n = {{n}};
+        var note_counts = '{{note_counts}}';
+        
+        note_counts_dict = JSON.parse(note_counts.replaceAll('&quot', '"').replaceAll(';', ''));
+        A_minor = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+
+        keys = Object.keys(note_counts_dict);
+        includes = keys.map(function(item,index){
+            return A_minor.includes(item) ? 'in tune':'out of tune';
+        });
+
+        notes_in_scale = includes.filter(x=> x== 'in tune').length;  
+        values = Object.values(note_counts_dict);
+        var note_trace = {
+            x:keys,
+            y:values,
+            name:'notes played',
+            type:'bar',
+            text:includes,
+        }
+
+        var data = [ note_trace];
+        title = `${notes_in_scale} notes played in scale`;
+
+        var layout = { title:title,barmode: 'stack' };
+
+        Plotly.newPlot('notesplot', data, layout);
+
+
+        var counts = '{{counts}}';
+        counts_dict_correct = JSON.parse(counts.replaceAll('&quot','"').replaceAll(';',''))
+        counts_incorrect = Object.values(counts_dict_correct).map(function(item,index){
+            return n - item
+        });
+        
+        var trace1 = {
+            x: ['index', 'middle', 'ring','pinky'],
+            y: counts_incorrect,
+            name: 'incorrect',
+            type: 'bar'
+        };
+
+        var trace2 = {
+            x: ['index', 'middle', 'ring','pinky'],
+            y: Object.values(counts_dict_correct),
+            name: 'correct',
+            type: 'bar'
+        };
+
+        var data = [trace1, trace2];
+
+        var layout = { barmode: 'group' };
+
+        Plotly.newPlot('fingerBarPlot', data, layout);
+
+
+    </script>
 
     <!--------------------------Footer section ----------------------------------->
 
