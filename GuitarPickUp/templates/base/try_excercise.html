@@ -174,13 +174,15 @@
                 //console.log(note_changed);
                 //console.log(document.getElementById('noteID').innerHTML)
                 //console.log(note_changed != document.getElementById('noteID').innerHTML);
+                console.log(note_changed);
+                console.log(document.getElementById('noteID').innerHTML)
                 if (note_changed != document.getElementById('noteID').innerHTML) {
                     note_changed = document.getElementById('noteID').innerHTML;
                     let index_class = document.getElementById('index').innerHTML;
                     let middle_class = document.getElementById('middle').innerHTML;
                     let ring_class = document.getElementById('ring').innerHTML;
                     let pinky_class = document.getElementById('pinky').innerHTML;
-                    //console.log('noticable change');
+                    console.log('noticable change');
                     //console.log(note_changed);
                     note_positions.push({
                         'index': index_class == 'correct',
@@ -324,8 +326,7 @@
         viddata.append("excercise_video", recordedFile);
         //   post url endpoint
         const url = "";
-        
-         $.ajax({
+        $.ajax({
             url: '/record_feedback',
             method: "POST",
             data: {
@@ -337,6 +338,7 @@
 
             }
         });
+        
         $.ajax({
             url: '/record',
             method: "POST",
@@ -358,6 +360,7 @@
             processData: false,
             contentType: false,
         });
+        
     });
 
 

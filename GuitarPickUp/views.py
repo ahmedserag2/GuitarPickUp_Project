@@ -137,6 +137,7 @@ def coursePage(request):
 
 def feedbackpage(request,my_id):
     feedback = Feedback.objects.get(pk = my_id)
+    video = StudentVideo.objects.latest('pk').video_record
     import pandas as pd
     with open(feedback.feedback) as json_file:
         data = json.load(json_file)
@@ -155,7 +156,8 @@ def feedbackpage(request,my_id):
     'table':table_dict,
     'counts':counts_dict,
     'n':df.shape[0],
-    'note_counts':note_counts
+    'note_counts':note_counts,
+    'video':video
     })
 
 def pyscripttest(request):
@@ -296,8 +298,11 @@ def record_feedback(request):
     feedback_details.save()
     '''
     feedback_root = settings.FEEDBACK_URL
-    last_feedback_id = str(int(str(Feedback.objects.latest('id'))) + 1)
-    full_path = feedback_root + last_feedback_id
+    try:
+        last_feedback_id = str(int(str(Feedback.objects.latest('id'))) + 1)
+    except:
+        last_feedback_id = 1
+    full_path = feedback_root + str(last_feedback_id)
     feedback = Feedback(feedback = full_path , report = "test",user_id = request.user)
     feedback.save()
     
@@ -532,11 +537,13 @@ def record(request):
         
         video_file = request.FILES.get("excercise_video")
         print('video file',video_file)
-        last_feedback_id = Feedback.objects.latest('id').id
+        
+        last_feedback_id = Feedback.objects.latest('id').id + 1
+        
         Feedback.objects.filter(pk = last_feedback_id).update(video_record = video_file)
 
-        #record = StudentVideo.objects.create(video_record=video_file)
-        #record.save()
+        record = StudentVideo.objects.create(video_record=video_file)
+        record.save()
         
         messages.success(request, "Video successfully added!")
         
