@@ -138,8 +138,7 @@ def coursePage(request):
 def feedbackpage(request,my_id):
     feedback = Feedback.objects.get(pk = my_id)
     import pandas as pd
-    print('feedbacks/39')
-    with open('feedbacks/39') as json_file:
+    with open(feedback.feedback) as json_file:
         data = json.load(json_file)
         df = pd.read_json(data)
     #df_notes_records = df.groupby('note').sum()
@@ -216,13 +215,13 @@ class validate_hands2(generics.GenericAPIView):
             middle_prediction = middle_model.predict(middle_left_coor)[0]
             ring_prediction = ring_model.predict(ring_left_coor)[0]
             pinky_prediction = pinky_model.predict(pinky_left_coor)[0]
-            info = getInfo()
+            #info = getInfo()
             data = {
                 'index': index_prediction,
                 'middle': middle_prediction,
                 'ring': ring_prediction,
                 'pinky': pinky_prediction,
-                'note': info,
+                'note': 'info',
             }
 
 
@@ -262,13 +261,13 @@ def validate_hands(request):
         middle_prediction = middle_model.predict(middle_left_coor)[0]
         ring_prediction = ring_model.predict(ring_left_coor)[0]
         pinky_prediction = pinky_model.predict(pinky_left_coor)[0]
-        info = getInfo()
+        
         data = {
             'index': index_prediction,
             'middle': middle_prediction,
             'ring': ring_prediction,
             'pinky': pinky_prediction,
-            'note': info,
+            'note': 'info',
         }
     return JsonResponse(data)
 
@@ -532,8 +531,12 @@ def record(request):
     if request.method == "POST":
         
         video_file = request.FILES.get("excercise_video")
-        record = StudentVideo.objects.create(video_record=video_file)
-        record.save()
+        print('video file',video_file)
+        last_feedback_id = Feedback.objects.latest('id').id
+        Feedback.objects.filter(pk = last_feedback_id).update(video_record = video_file)
+
+        #record = StudentVideo.objects.create(video_record=video_file)
+        #record.save()
         
         messages.success(request, "Video successfully added!")
         

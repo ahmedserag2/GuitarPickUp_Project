@@ -36,7 +36,9 @@ class StudentVideo(models.Model):
 
 
 class Feedback(models.Model):
-    video_id = models.ForeignKey(StudentVideo,on_delete=models.CASCADE,null=True,blank=True)
+    #video_id = models.ForeignKey(StudentVideo,on_delete=models.CASCADE,null=True,blank=True)
+    video_record = models.FileField(null = True,upload_to="records")
+    
     user_id = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     feedback = models.TextField(null=True,blank=True)
     report= models.TextField(null=True,blank=True)
@@ -45,7 +47,7 @@ class Feedback(models.Model):
         return str(self.id)
 
     class Meta:
-        ordering =['video_id']
+        ordering =['pk']
 
 class Feedback_details(models.Model):
     feedback_id = models.ForeignKey(Feedback,on_delete=models.CASCADE,null=True,blank=True)
