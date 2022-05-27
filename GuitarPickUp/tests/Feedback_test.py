@@ -32,7 +32,7 @@ class Feedback_test(TestCase):
         #print(response.context['feedback'].id)
         #self.assertEqual(response.status_code, 200)
         #self.assertEqual(response.context["feedback"].id, 1)
-
+        #"test"
         response = c.get("/feedback/")
         self.assertEqual(response.status_code, 404)
 
